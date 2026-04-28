@@ -2,7 +2,7 @@
 
 A professional Library Management System built with a Node.js/Express backend and a Next.js frontend. The system features strict TypeScript typing, Zod-based validation, and a premium UI with dark/light mode support.
 
-## 🚀 Getting Started
+## Getting Started
 
 Follow these steps to initialize and run the project locally.
 
