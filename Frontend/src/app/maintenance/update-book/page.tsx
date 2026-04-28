@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import toast from "react-hot-toast"
 import { bookSchema, BookFormValues } from "@/lib/validation"
 import useBooks from "@/hooks/queries/useBooks"
 import { Button } from "@/components/ui/button"
@@ -65,11 +66,11 @@ export default function UpdateBookPage() {
     updateBook.mutate({ id: selectedBook._id, ...data } as any, {
       onSuccess: (res: { success: boolean; message?: string }) => {
         if (res.success) {
-          alert("Book updated successfully")
+          toast.success("Book updated successfully")
           setSelectedBook(null)
           setSearchTerm("")
         } else {
-          alert(res.message || "Failed to update book")
+          toast.error(res.message || "Failed to update book")
         }
       },
     })

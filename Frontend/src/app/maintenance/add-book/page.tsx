@@ -2,6 +2,7 @@
 
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import toast from "react-hot-toast"
 import { bookSchema, BookFormValues } from "@/lib/validation"
 import useBooks from "@/hooks/queries/useBooks"
 import { Button } from "@/components/ui/button"
@@ -34,10 +35,10 @@ export default function AddBookPage() {
     addBook.mutate(data, {
       onSuccess: (res: { success: boolean; data?: Book; message?: string }) => {
         if (res.success) {
-          alert("Book/Movie added successfully")
+          toast.success("Book/Movie added successfully")
           reset()
         } else {
-          alert(res.message || "Failed to add book")
+          toast.error(res.message || "Failed to add book")
         }
       },
     })

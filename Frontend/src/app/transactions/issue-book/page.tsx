@@ -2,6 +2,7 @@
 
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import toast from "react-hot-toast"
 import { issueSchema, IssueFormValues } from "@/lib/validation"
 import useTransactions from "@/hooks/queries/useTransactions"
 import useBooks from "@/hooks/queries/useBooks"
@@ -46,10 +47,10 @@ export default function BookIssuePage() {
     issueBook.mutate(data, {
       onSuccess: (res: { success: boolean; data?: Transaction; message?: string }) => {
         if (res.success) {
-          alert("Book issued successfully")
+          toast.success("Book issued successfully")
           reset()
         } else {
-          alert(res.message || "Failed to issue book")
+          toast.error(res.message || "Failed to issue book")
         }
       },
     })

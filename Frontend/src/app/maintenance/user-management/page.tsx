@@ -1,5 +1,6 @@
 "use client"
 import { useState } from "react"
+import toast from "react-hot-toast"
 import useUsers from "@/hooks/queries/useUsers"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -32,7 +33,7 @@ export default function UserManagementPage() {
     setError("")
     createUser.mutate(formData, {
       onSuccess: () => {
-        alert("User processed successfully")
+        toast.success("User processed successfully")
         setFormData({ name: "", email: "", password: "", role: "user", type: "new" })
       },
       onError: (err: any) => {

@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import toast from "react-hot-toast"
 import { memberSchema, MemberFormValues } from "@/lib/validation"
 import useMembers from "@/hooks/queries/useMembers"
 import { Button } from "@/components/ui/button"
@@ -49,11 +50,11 @@ export default function UpdateMembershipPage() {
     } as any, {
       onSuccess: (res: { success: boolean; message?: string }) => {
         if (res.success) {
-          alert(`Membership extended by ${months} months. New expiry: ${newExpiry.toLocaleDateString()}`)
+          toast.success(`Membership extended by ${months} months. New expiry: ${newExpiry.toLocaleDateString()}`)
           setSelectedMember(null)
           setMembershipNo("")
         } else {
-          alert(res.message || "Failed to extend membership")
+          toast.error(res.message || "Failed to extend membership")
         }
       },
     })
@@ -69,11 +70,11 @@ export default function UpdateMembershipPage() {
       } as any, {
         onSuccess: (res: { success: boolean; message?: string }) => {
           if (res.success) {
-            alert("Membership cancelled successfully")
+            toast.success("Membership cancelled successfully")
             setSelectedMember(null)
             setMembershipNo("")
           } else {
-            alert(res.message || "Failed to cancel membership")
+            toast.error(res.message || "Failed to cancel membership")
           }
         },
       })

@@ -2,6 +2,7 @@
 
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import toast from "react-hot-toast"
 import { memberSchema, MemberFormValues } from "@/lib/validation"
 import useMembers from "@/hooks/queries/useMembers"
 import { Button } from "@/components/ui/button"
@@ -34,7 +35,7 @@ export default function AddMembershipPage() {
     addMember.mutate(data, {
       onSuccess: (res: { success: boolean; data?: Member; message?: string }) => {
         if (res.success) {
-          alert("Membership added successfully. Member ID: " + data.membershipNumber)
+          toast.success(`Membership added successfully. Member ID: ${data.membershipNumber}`)
           reset({
             name: "",
             membershipNumber: "MEM-" + Math.floor(Math.random() * 1000000),
@@ -42,7 +43,7 @@ export default function AddMembershipPage() {
             expiryDate: new Date(new Date().setMonth(new Date().getMonth() + 6)).toISOString().split('T')[0],
           })
         } else {
-          alert(res.message || "Failed to add membership")
+          toast.error(res.message || "Failed to add membership")
         }
       },
     })

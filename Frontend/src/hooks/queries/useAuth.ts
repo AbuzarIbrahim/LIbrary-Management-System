@@ -1,6 +1,7 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 import { actionLogin, actionLogout, actionSignup } from "@/actions/auth";
 import { useRouter } from "next/navigation";
 import { AuthData, ApiResponse } from "@/types";
@@ -16,9 +17,10 @@ export default function useAuth() {
       if (res.success && res.data) {
         localStorage.setItem("token", res.data.data.token);
         localStorage.setItem("user", JSON.stringify(res.data.data.user));
+        toast.success("Login successful!");
         router.push("/");
       } else {
-        alert(res.message || "Login failed");
+        toast.error(res.message || "Login failed");
       }
     },
   });
@@ -30,9 +32,10 @@ export default function useAuth() {
       if (res.success && res.data) {
         localStorage.setItem("token", res.data.data.token);
         localStorage.setItem("user", JSON.stringify(res.data.data.user));
+        toast.success("Registration successful!");
         router.push("/");
       } else {
-        alert(res.message || "Registration failed");
+        toast.error(res.message || "Registration failed");
       }
     },
   });

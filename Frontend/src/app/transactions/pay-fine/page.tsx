@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
+import toast from "react-hot-toast"
 import useTransactions from "@/hooks/queries/useTransactions"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -63,7 +64,7 @@ function PayFineContent() {
       finePaid: fine > 0 ? finePaid : true
     }, {
       onSuccess: () => {
-        alert("Transaction completed successfully")
+        toast.success("Transaction completed successfully")
         router.push("/transactions/return-book")
       },
       onError: (err: any) => {
