@@ -37,8 +37,8 @@ export function Sidebar() {
     <aside className="fixed left-0 top-0 h-screen w-64 border-r bg-card/50 backdrop-blur-xl z-50">
       <div className="flex flex-col h-full p-6">
         <div className="flex items-center gap-3 mb-10 px-2">
-          <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
-            <Library className="w-6 h-6 text-primary-foreground" />
+          <div className="w-10 h-10 rounded-xl overflow-hidden shadow-lg shadow-primary/20">
+            <img src="/favicon.png" alt="Logo" className="w-full h-full object-cover" />
           </div>
           <span className="text-xl font-bold tracking-tight font-serif">LMS Portal</span>
         </div>

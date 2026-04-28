@@ -15,6 +15,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Library Management System",
   description: "Manage books, members, and transactions",
+  icons: {
+    icon: "/favicon.png",
+  },
 };
 export default function RootLayout({
   children,
