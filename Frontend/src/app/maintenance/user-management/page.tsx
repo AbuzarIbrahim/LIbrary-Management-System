@@ -21,8 +21,12 @@ export default function UserManagementPage() {
   const [error, setError] = useState("")
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (formData.type === "new" && (!formData.name || !formData.email || !formData.password)) {
-      setError("Name, Email, and Password are mandatory for new users.")
+    if (!formData.name) {
+      setError("Name is mandatory.")
+      return
+    }
+    if (formData.type === "new" && (!formData.email || !formData.password)) {
+      setError("Email and Password are mandatory for new users.")
       return
     }
     setError("")

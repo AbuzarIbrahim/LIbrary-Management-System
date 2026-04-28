@@ -31,13 +31,14 @@ const issueBook = async (req, res) => {
 };
 const returnBook = async (req, res) => {
     try {
-        const { transactionId, returnDate, remarks } = req.body;
+        const { transactionId, returnDate, remarks, finePaid } = req.body;
         const transaction = await Transaction.findById(transactionId);
         if (!transaction) {
             throw new Error('Transaction not found');
         }
         transaction.returnDate = returnDate || Date.now();
         transaction.remarks = remarks;
+        transaction.finePaid = finePaid || false;
         transaction.status = 'returned';
         await transaction.save();
         await Book.findByIdAndUpdate(transaction.book, { available: true });

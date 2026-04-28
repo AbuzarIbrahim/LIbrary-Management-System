@@ -29,9 +29,26 @@ export const memberSchema = z.object({
 export const issueSchema = z.object({
   bookId: z.string().min(1, { message: "Book selection is required" }),
   memberId: z.string().min(1, { message: "Member selection is required" }),
+  issueDate: z.string().min(1, { message: "Issue date is required" }).refine((val) => {
+    const date = new Date(val);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return date >= today;
+  }, { message: "Issue date cannot be earlier than today" }),
   dueDate: z.string().min(1, { message: "Due date is required" }),
   remarks: z.string().optional(),
+}).refine((data) => {
+  const issue = new Date(data.issueDate);
+  const due = new Date(data.dueDate);
+  const maxDue = new Date(issue);
+  maxDue.setDate(issue.getDate() + 15);
+  
+  return due > issue && due <= maxDue;
+}, {
+  message: "Due date must be after issue date and within 15 days",
+  path: ["dueDate"]
 });
+
 
 export const returnSchema = z.object({
   transactionId: z.string().min(1, { message: "Transaction selection is required" }),

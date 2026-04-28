@@ -1,10 +1,20 @@
 "use server";
 import axiosInstance from "../utils/axios";
-import { Transaction, ApiResponse } from "../types";
+import {
+  Transaction,
+  ApiResponse,
+  IssueBookRequest,
+  ReturnBookRequest,
+  ActionResponse,
+} from "../types";
 
-export async function actionGetTransactions(): Promise<{ success: boolean; data?: Transaction[]; message?: string }> {
+export async function actionGetTransactions(): Promise<
+  ActionResponse<Transaction[]>
+> {
   try {
-    const res = await axiosInstance.get<ApiResponse<Transaction[]>>("/api/v1/transactions");
+    const res = await axiosInstance.get<ApiResponse<Transaction[]>>(
+      "/api/v1/transactions"
+    );
     return {
       success: true,
       data: res.data.data,
@@ -17,9 +27,14 @@ export async function actionGetTransactions(): Promise<{ success: boolean; data?
   }
 }
 
-export async function actionIssueBook(issueData: { bookId: string; memberId: string; dueDate: string; remarks?: string }): Promise<{ success: boolean; data?: Transaction; message?: string }> {
+export async function actionIssueBook(
+  issueData: IssueBookRequest
+): Promise<ActionResponse<Transaction>> {
   try {
-    const res = await axiosInstance.post<ApiResponse<Transaction>>("/api/v1/transactions/issue", issueData);
+    const res = await axiosInstance.post<ApiResponse<Transaction>>(
+      "/api/v1/transactions/issue",
+      issueData
+    );
     return {
       success: true,
       data: res.data.data,
@@ -32,9 +47,14 @@ export async function actionIssueBook(issueData: { bookId: string; memberId: str
   }
 }
 
-export async function actionReturnBook(returnData: { transactionId: string; returnDate?: string; remarks?: string }): Promise<{ success: boolean; data?: Transaction; message?: string }> {
+export async function actionReturnBook(
+  returnData: ReturnBookRequest
+): Promise<ActionResponse<Transaction>> {
   try {
-    const res = await axiosInstance.post<ApiResponse<Transaction>>("/api/v1/transactions/return", returnData);
+    const res = await axiosInstance.post<ApiResponse<Transaction>>(
+      "/api/v1/transactions/return",
+      returnData
+    );
     return {
       success: true,
       data: res.data.data,

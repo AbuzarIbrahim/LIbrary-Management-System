@@ -33,7 +33,8 @@ export default function BookIssuePage() {
     defaultValues: {
       bookId: "",
       memberId: "",
-      dueDate: new Date(new Date().setDate(new Date().getDate() + 14)).toISOString().split('T')[0],
+      issueDate: new Date().toISOString().split('T')[0],
+      dueDate: new Date(new Date().setDate(new Date().getDate() + 15)).toISOString().split('T')[0],
       remarks: "",
     },
   })
@@ -131,10 +132,15 @@ export default function BookIssuePage() {
               />
             </div>
           </CardContent>
-          <CardFooter>
+          <CardFooter className="flex flex-col gap-4">
             <Button type="submit" className="w-full" disabled={issueBook.isPending}>
               {issueBook.isPending ? "Issuing..." : "Confirm Issue"}
             </Button>
+            {Object.keys(errors).length > 0 && (
+              <p className="text-destructive text-xs text-center">
+                Please make a valid selection of the feature.
+              </p>
+            )}
           </CardFooter>
         </form>
       </Card>

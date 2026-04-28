@@ -51,7 +51,7 @@ function PayFineContent() {
     }
 
     if (fine > 0 && !finePaid) {
-      setError("For a pending fine, the paid fine check box needs to be selected.")
+      setError("For a pending fine, the paid fine check box needs to be selected before the user can complete the return book transaction. Please make a valid selection of the feature. And book will not be returned until then.")
       return
     }
 
@@ -59,7 +59,8 @@ function PayFineContent() {
     returnBook.mutate({
       transactionId: transactionId,
       returnDate: new Date().toISOString().split("T")[0],
-      remarks
+      remarks,
+      finePaid: fine > 0 ? finePaid : true
     }, {
       onSuccess: () => {
         alert("Transaction completed successfully")

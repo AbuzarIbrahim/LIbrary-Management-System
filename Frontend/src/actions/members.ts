@@ -1,10 +1,18 @@
 "use server";
 import axiosInstance from "../utils/axios";
-import { Member, ApiResponse } from "../types";
+import {
+  Member,
+  ApiResponse,
+  ActionResponse,
+  AddMemberRequest,
+  UpdateMemberRequest,
+} from "../types";
 
-export async function actionGetMembers(): Promise<{ success: boolean; data?: Member[]; message?: string }> {
+export async function actionGetMembers(): Promise<ActionResponse<Member[]>> {
   try {
-    const res = await axiosInstance.get<ApiResponse<Member[]>>("/api/v1/members");
+    const res = await axiosInstance.get<ApiResponse<Member[]>>(
+      "/api/v1/members"
+    );
     return {
       success: true,
       data: res.data.data,
@@ -17,9 +25,14 @@ export async function actionGetMembers(): Promise<{ success: boolean; data?: Mem
   }
 }
 
-export async function actionAddMember(memberData: Partial<Member>): Promise<{ success: boolean; data?: Member; message?: string }> {
+export async function actionAddMember(
+  memberData: AddMemberRequest
+): Promise<ActionResponse<Member>> {
   try {
-    const res = await axiosInstance.post<ApiResponse<Member>>("/api/v1/members", memberData);
+    const res = await axiosInstance.post<ApiResponse<Member>>(
+      "/api/v1/members",
+      memberData
+    );
     return {
       success: true,
       data: res.data.data,
@@ -32,9 +45,15 @@ export async function actionAddMember(memberData: Partial<Member>): Promise<{ su
   }
 }
 
-export async function actionUpdateMember({ id, memberData }: { id: string; memberData: Partial<Member> }): Promise<{ success: boolean; data?: Member; message?: string }> {
+export async function actionUpdateMember({
+  id,
+  memberData,
+}: UpdateMemberRequest): Promise<ActionResponse<Member>> {
   try {
-    const res = await axiosInstance.patch<ApiResponse<Member>>(`/api/v1/members/${id}`, memberData);
+    const res = await axiosInstance.patch<ApiResponse<Member>>(
+      `/api/v1/members/${id}`,
+      memberData
+    );
     return {
       success: true,
       data: res.data.data,

@@ -11,8 +11,10 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/componen
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Transaction, Book, Member } from "@/types"
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 
 export default function ReturnBookPage() {
+  const router = useRouter()
   const { getTransactions, returnBook } = useTransactions()
   const transactions = getTransactions.data || []
 
@@ -21,7 +23,7 @@ export default function ReturnBookPage() {
     handleSubmit,
     control,
     watch,
-    reset,
+    setValue,
     formState: { errors },
   } = useForm<ReturnFormValues>({
     resolver: zodResolver(returnSchema),
@@ -38,6 +40,10 @@ export default function ReturnBookPage() {
 
   useEffect(() => {
     if (selectedTransaction) {
+      // Requirement: Return Date is automatically populated to the date selected while issuing the book.
+      const issueDateStr = new Date(selectedTransaction.issueDate).toISOString().split('T')[0]
+      setValue("returnDate", issueDateStr)
+      
       const due = new Date(selectedTransaction.dueDate)
       const ret = new Date(watch("returnDate") || new Date())
       if (ret > due) {
@@ -48,19 +54,26 @@ export default function ReturnBookPage() {
         setFine(0)
       }
     }
-  }, [selectedTransaction, watch("returnDate")])
+  }, [selectedTransaction, setValue])
+
+  // Separate effect for fine calculation when returnDate changes
+  useEffect(() => {
+    if (selectedTransaction) {
+      const due = new Date(selectedTransaction.dueDate)
+      const ret = new Date(watch("returnDate") || new Date())
+      if (ret > due) {
+        const diffTime = Math.abs(ret.getTime() - due.getTime())
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+        setFine(diffDays * 1) 
+      } else {
+        setFine(0)
+      }
+    }
+  }, [watch("returnDate"), selectedTransaction])
 
   const onSubmit = (data: ReturnFormValues) => {
-    returnBook.mutate(data, {
-      onSuccess: (res: { success: boolean; data?: Transaction; message?: string }) => {
-        if (res.success) {
-          alert("Book returned successfully" + (fine > 0 ? `. Fine of $${fine} settled.` : ""))
-          reset()
-        } else {
-          alert(res.message || "Failed to return book")
-        }
-      },
-    })
+    if (!data.transactionId) return
+    router.push(`/transactions/pay-fine?transactionId=${data.transactionId}`)
   }
 
   return (
@@ -130,7 +143,7 @@ export default function ReturnBookPage() {
                   ⚠️ Overdue Fine: ${fine}
                 </p>
                 <p className="text-xs text-yellow-700 dark:text-yellow-300 text-center mt-1">
-                  Fine will be automatically settled upon confirmation.
+                  You will be taken to the Fine Payment page.
                 </p>
               </div>
             )}
@@ -144,10 +157,15 @@ export default function ReturnBookPage() {
               />
             </div>
           </CardContent>
-          <CardFooter>
-            <Button type="submit" className="w-full" disabled={returnBook.isPending}>
-              {returnBook.isPending ? "Processing..." : "Confirm Return"}
+          <CardFooter className="flex flex-col gap-4">
+            <Button type="submit" className="w-full">
+              Confirm Return
             </Button>
+            {Object.keys(errors).length > 0 && (
+              <p className="text-destructive text-xs text-center">
+                Please make a valid selection of the feature.
+              </p>
+            )}
           </CardFooter>
         </form>
       </Card>

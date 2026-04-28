@@ -1,11 +1,22 @@
 "use server";
 import axiosInstance from "../utils/axios";
-import { AuthData, ApiResponse } from "../types";
+import {
+  AuthData,
+  ApiResponse,
+  ActionResponse,
+  LoginRequest,
+  SignupRequest,
+} from "../types";
 import { cookies } from "next/headers";
 
-export async function actionLogin(credentials: any): Promise<{ success: boolean; data?: ApiResponse<AuthData>; message?: string }> {
+export async function actionLogin(
+  credentials: LoginRequest
+): Promise<ActionResponse<ApiResponse<AuthData>>> {
   try {
-    const res = await axiosInstance.post<ApiResponse<AuthData>>("/api/v1/users/login", credentials);
+    const res = await axiosInstance.post<ApiResponse<AuthData>>(
+      "/api/v1/users/login",
+      credentials
+    );
     const { token, user } = res.data.data;
     const cookieStore = await cookies();
     cookieStore.set("token", token, { httpOnly: false });
@@ -22,9 +33,14 @@ export async function actionLogin(credentials: any): Promise<{ success: boolean;
   }
 }
 
-export async function actionSignup(userData: any): Promise<{ success: boolean; data?: ApiResponse<AuthData>; message?: string }> {
+export async function actionSignup(
+  userData: SignupRequest
+): Promise<ActionResponse<ApiResponse<AuthData>>> {
   try {
-    const res = await axiosInstance.post<ApiResponse<AuthData>>("/api/v1/users/signup", userData);
+    const res = await axiosInstance.post<ApiResponse<AuthData>>(
+      "/api/v1/users/signup",
+      userData
+    );
     const { token, user } = res.data.data;
     const cookieStore = await cookies();
     cookieStore.set("token", token, { httpOnly: false });
@@ -40,9 +56,10 @@ export async function actionSignup(userData: any): Promise<{ success: boolean; d
     };
   }
 }
-export async function actionLogout() {
+
+export async function actionLogout(): Promise<ActionResponse<null>> {
   const cookieStore = await cookies();
   cookieStore.delete("token");
   cookieStore.delete("user");
-  return { success: true };
+  return { success: true, data: null };
 }

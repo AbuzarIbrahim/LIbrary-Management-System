@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { Book, Repeat, FileText, Settings, Home, Library } from "lucide-react"
+import { Book, Repeat, FileText, Settings, Home, Library, Layout } from "lucide-react"
 import { motion } from "framer-motion"
 
 const navItems = [
@@ -13,6 +13,7 @@ const navItems = [
   { name: "Transactions", href: "/transactions/issue-book", icon: Repeat },
   { name: "Reports", href: "/reports", icon: FileText },
   { name: "Maintenance", href: "/maintenance/add-book", icon: Settings },
+  { name: "System Chart", href: "/chart", icon: Layout },
 ]
 
 export function Sidebar() {
@@ -51,30 +52,37 @@ export function Sidebar() {
             return true
           }).map((item) => {
             const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href))
+            const isMaintenance = item.name === "Maintenance"
+            
             return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "relative flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group",
-                  isActive 
-                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" 
-                    : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+              <div key={item.href} className="space-y-1">
+                <Link
+                  href={item.href}
+                  className={cn(
+                    "relative flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group",
+                    isActive 
+                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" 
+                      : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                  )}
+                >
+                  <item.icon className={cn("h-5 w-5", isActive ? "text-primary-foreground" : "group-hover:scale-110 transition-transform")} />
+                  <span className="font-medium text-sm">{item.name}</span>
+                </Link>
+                
+                {isMaintenance && userRole === "admin" && (
+                  <div className="pl-12 flex flex-col gap-1 mt-1">
+                    <MaintenanceLink href="/maintenance/add-book" label="Add Book" currentPath={pathname} />
+                    <MaintenanceLink href="/maintenance/update-book" label="Update Book" currentPath={pathname} />
+                    <MaintenanceLink href="/maintenance/add-membership" label="Add Member" currentPath={pathname} />
+                    <MaintenanceLink href="/maintenance/update-membership" label="Update Member" currentPath={pathname} />
+                    <MaintenanceLink href="/maintenance/user-management" label="Users" currentPath={pathname} />
+                  </div>
                 )}
-              >
-                <item.icon className={cn("h-5 w-5", isActive ? "text-primary-foreground" : "group-hover:scale-110 transition-transform")} />
-                <span className="font-medium text-sm">{item.name}</span>
-                {isActive && (
-                  <motion.div
-                    layoutId="sidebar-active"
-                    className="absolute right-2 w-1.5 h-1.5 bg-primary-foreground rounded-full"
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  />
-                )}
-              </Link>
+              </div>
             )
           })}
         </nav>
+
 
         <div className="pt-6 border-t border-border/50">
           <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold px-4 mb-4">
@@ -85,3 +93,19 @@ export function Sidebar() {
     </aside>
   )
 }
+
+function MaintenanceLink({ href, label, currentPath }: { href: string, label: string, currentPath: string }) {
+  const isActive = currentPath === href
+  return (
+    <Link 
+      href={href} 
+      className={cn(
+        "text-xs py-1.5 px-3 rounded-lg transition-colors",
+        isActive ? "text-primary font-bold bg-primary/10" : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+      )}
+    >
+      {label}
+    </Link>
+  )
+}
+
