@@ -5,6 +5,6 @@ const router = express.Router();
 
 
 router.get('/', verifyToken, transactionController.getAllTransactions);
-router.post('/issue', verifyToken, restrictTo('admin'), transactionController.issueBook);
-router.post('/return', verifyToken, restrictTo('admin'), transactionController.returnBook);
+router.post('/issue', verifyToken, transactionController.issueBook);
+router.post('/return', verifyToken, transactionController.returnBook);
 module.exports = router;

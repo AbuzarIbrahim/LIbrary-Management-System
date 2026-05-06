@@ -35,7 +35,7 @@ export default function Home() {
   const bookCount = getBooks.data?.length || 0
   const memberCount = getMembers.data?.length || 0
   const pendingReturns = getTransactions.data?.filter((t: any) => !t.returnDate).length || 0
-
+  // const totalTransactions = getTransactions.data?.length || 0
   const container = {
     hidden: { opacity: 0 },
     show: {

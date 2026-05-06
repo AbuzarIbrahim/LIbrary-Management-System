@@ -172,6 +172,34 @@ const DeleteUser = async (req, res) => {
         });
     }
 };
+const UpdateUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, role } = req.body;
+        
+        const user = await User.findByIdAndUpdate(
+            id,
+            { name, role },
+            { new: true, runValidators: true }
+        ).select('-password');
+
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        res.status(200).json({
+            status: 'success',
+            message: 'User updated successfully',
+            data: { user }
+        });
+    } catch (error) {
+        res.status(400).json({
+            status: 'fail',
+            message: error.message
+        });
+    }
+};
+
 module.exports = {
     SignUp,
     LogIn,
@@ -179,5 +207,6 @@ module.exports = {
     UpdatePassword,
     ChangePassword,
     GetAllUsers,
-    DeleteUser
+    DeleteUser,
+    UpdateUser
 };

@@ -7,6 +7,14 @@ const bookRouter = require('./Routes/bookRoute');
 const memberRouter = require('./Routes/memberRoute');
 const transactionRouter = require('./Routes/transactionRoute');
 const app = express();
+app.use((req, res, next) => {
+    const start = Date.now();
+    res.on('finish', () => {
+        const duration = Date.now() - start;
+        console.log(`${req.method} ${req.url} ${res.statusCode} - ${duration}ms - User: ${req.user?.role || 'Guest'}`);
+    });
+    next();
+});
 app.use(helmet());
 app.use(cors()); 
 const limiter = rateLimit({

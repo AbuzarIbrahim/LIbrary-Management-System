@@ -56,6 +56,10 @@ const returnBook = async (req, res) => {
 const getAllTransactions = async (req, res) => {
     try {
         const transactions = await Transaction.find().populate('book member');
+
+        const totalTransactions = await Transaction.aggregate({
+            
+        })
         res.status(200).json({
             status: 'success',
             results: transactions.length,

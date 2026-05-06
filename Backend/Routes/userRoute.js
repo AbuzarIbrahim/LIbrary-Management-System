@@ -7,15 +7,21 @@ const {
     LogIn,
     GetAllUsers,
     DeleteUser,
+    UpdateUser,
     ForgotPassword,
     ChangePassword,
     UpdatePassword
 } = require('../Controllers/userController');
+
 router.post('/signup', validateSignup, SignUp);
 router.post('/login', validateLogin, LogIn);
 router.post('/forgot-password', ForgotPassword);
-router.get('/users', verifyToken, restrictTo('admin'), GetAllUsers);
-router.delete('/user/:id', verifyToken, restrictTo('admin'), DeleteUser);
+
+router.get('/', verifyToken, restrictTo('admin'), GetAllUsers);
+router.delete('/:id', verifyToken, restrictTo('admin'), DeleteUser);
+router.patch('/:id', verifyToken, restrictTo('admin'), UpdateUser);
+
 router.post('/change-password', verifyToken, ChangePassword);
 router.put('/update-password', verifyToken, UpdatePassword);
+
 module.exports = router;
